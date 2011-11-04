@@ -1,0 +1,163 @@
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+/**
+ * This will be the entry point application
+ * 
+ * @author Uri
+ * 
+ */
+public class TitleScreen extends JFrame implements KeyListener {
+
+    public boolean running = true;
+
+    int stage; // keeps track of what level the user is currently on
+     JFrame frame;
+
+    JPanel startScreen;
+
+    Graphics g;
+
+    JTextField textfield;
+
+    String input;
+
+    private int width = 640;
+
+    private int height = 480;
+
+    private String title = "Find a Way to get Rid of your Friend's Corpse.. 2!";
+
+    private String subTitle = "RipFuckingCord Productions. TEST";
+
+    int trans = height - 200;
+
+    int subTrans = height - 200;
+
+    public TitleScreen() {
+        super("Game");
+
+        stage = 0; // initalize level counter
+
+        textfield = new JTextField(""); // create a new textfield
+        textfield.setSize(width, 40);
+        textfield.setLocation(0, height - (textfield.getHeight() / 2) - 5);
+        textfield.setVisible(true);
+        textfield.setBackground(Color.GREEN);
+        textfield.setFont(new Font("Courier New", Font.BOLD, 20));
+
+         frame = new JFrame("Corpse Disposal");
+         frame.setSize(width, height + textfield.getHeight());
+         frame.setVisible(true);
+         frame.setLayout(null);
+         frame.setResizable(false);
+         frame.setLayout(null);
+
+        startScreen = new JPanel(null);
+        frame.add(startScreen);
+        startScreen.setLocation(0, 0);
+        startScreen.setSize(width, height);
+        startScreen.setVisible(true);
+
+        startScreen.add(textfield); // add textfield to screen
+        textfield.addKeyListener(this); // attempting to add keylistener to
+                                        // textfield
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public void run() throws InterruptedException {
+        Image image = createVolatileImage(320, 240);
+
+        while (running) {
+            // g = image.getGraphics();
+            g = startScreen.getGraphics();
+            // Draw the background
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, width, height);
+
+            g.setColor(Color.WHITE); // Set the color of the text
+
+            // Move the text
+            if (trans > 80) {
+                g.drawString(title, 15, trans);
+                trans -= 3;
+            } else if (subTrans > 95) {
+                g.drawString(title, 15, trans);
+                g.drawString(subTitle, 15, subTrans);
+                subTrans -= 5;
+            } else {
+                g.drawString(title, 15, trans);
+                g.setColor(Color.PINK);
+                g.drawString(subTitle, 15, subTrans);
+                g.setColor(Color.WHITE);
+                textfield.requestFocus();
+            }
+
+            // Get the frames grahpics
+            g = getGraphics();
+
+            // Draw what we have created so far
+            //g.drawImage(image, 0, 0, (width * 2), (height * 2), 0, 0, width,
+             //height, null);
+
+            // Clean up
+            // g.dispose();
+
+            // 30 fps
+            Thread.sleep(30);
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == (KeyEvent.VK_ENTER)) { // if enter is hit then do
+                                                     // the following
+            input = textfield.getText();
+            processInput(input);
+            textfield.setText("");
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+        if (e.getKeyCode() == (KeyEvent.VK_1))
+            System.out.println("TYPED 1!"); // test
+
+    }
+
+    // PROCESSES WHAT IS IN THE TEXTFIELD
+    public void processInput(String input) {
+        String output;
+        if (input.equals("Play") || input.equals("play") && stage == 0) {
+            // Brings to FIRST SCREEN...
+            System.out.println("GAME HAS BEGUN!"); // testing
+            stage++;
+        } else {
+            output = new String(input + " is not a recognized command");
+            //g.drawString(output, 15, subTrans - 15);
+        }
+        return;
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+
+        TitleScreen game = new TitleScreen();
+
+        game.run();
+    }
+}
